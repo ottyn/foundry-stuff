@@ -7,13 +7,13 @@
 # Change to match your environment
 #
 # SSH private key for remote server
-$ssh_private_key="$HOME/.ssh/private.key"
+ssh_private_key="$HOME/.ssh/private.key"
 # Local FoundryVTT user data path
-$local_data="$HOME/foundrydata"
+local_data="$HOME/foundrydata"
 # Remote server username and IP address
-$remote_svr="username@remote IP"
+remote_svr="username@remote IP"
 # Path on remote server to Foundry User data folder
-$remote_path="/home/username/foundrydata"
+remote_path="/home/username/foundrydata"
 # Get today's month, day, and year
 today=$(date +%Y-%m-%d)
 # Get the path to the folder to backup
