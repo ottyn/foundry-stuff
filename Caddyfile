@@ -1,0 +1,37 @@
+# This replaces the existing content in /etc/caddy/Caddyfile
+
+# A CONFIG SECTION FOR YOUR HOSTNAME
+your.hostname.com {
+	# PROXY ALL REQUEST TO PORT 30000
+	reverse_proxy localhost:30000
+	encode zstd gzip
+
+	# Add security headers
+	header {
+		# Prevent clickjacking
+		X-Frame-Options "DENY"
+		# Prevent search engines from indexing
+		X-Robots-Tag "noindex, nofollow, nosnippet, noarchive"
+		# Enable XSS protection
+		X-XSS-Protection "1; mode=block"
+		# Referrer policy
+		Referrer-Policy "no-referrer"
+	}
+
+	respond /robots.txt <<EOF
+	User-agent: *
+	Disallow: /
+	EOF 200
+
+	# Logging options
+	log {
+		output file /var/log/caddy/access.log {
+			roll_size 10MB
+			roll_keep 10
+			roll_keep_for 336h
+		}
+	}
+}
+
+# Refer to the Caddy docs for more information:
+# https://caddyserver.com/docs/caddyfile
