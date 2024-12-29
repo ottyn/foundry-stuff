@@ -1,1 +1,1 @@
-Various FoundryVTT script and files for managing my personal servers.
+Various FoundryVTT scripts and files for managing my personal servers.
