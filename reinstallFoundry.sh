@@ -4,7 +4,8 @@
 # 
 
 pm2 stop foundry
-rm -rf $HOME/foundry/*
+mv $HOME/foundry $HOME/foundry_archive
+mkdir $HOME/foundry
 echo "Enter the FoundryVTT timed download url for the NodeJS version:"
 read tdurl
 wget -O $HOME/foundry/foundryvtt.zip "$tdurl"
