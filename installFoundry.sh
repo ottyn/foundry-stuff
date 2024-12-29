@@ -64,15 +64,15 @@ sed -i 's/"proxyPort": null/"proxyPort": 443/g' $HOME/foundrydata/Config/options
 sed -i 's/"proxySSL": false/"proxySSL": true/g' $HOME/foundrydata/Config/options.json
 sed -i 's/"hostname": null/"hostname": "$vtturl"/g' $HOME/foundrydata/Config/options.json
 
-# Restart Foundry pm2 instance
-pm2 restart foundry
-
-# Create custom assets directory
+# Create custom assets directories that I use
 mkdir $HOME/foundrydata/Data/assets
 mkdir $HOME/foundrydata/Data/assets/pc_images
 mkdir $HOME/foundrydata/Data/assets/npc_images
 mkdir $HOME/foundrydata/Data/assets/maps
 mkdir $HOME/foundrydata/Data/assets/token_frames
+
+# Restart Foundry pm2 instance
+pm2 restart foundry
 
 # Restarting the system to complete installation
 sleep 2
