@@ -21,6 +21,7 @@ nvm install 20
 node -v
 nvm current
 npm -v
+nvm alias default node
 
 # Add caddy repository to the system package manager
 sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https
