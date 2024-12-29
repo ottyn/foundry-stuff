@@ -4,18 +4,19 @@
 
 sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y && sudo apt autoclean
 
-# To update to NodeJS 18, we should stop pm2 processes
+# To upgrade NodeJS, we should stop pm2 processes
 pm2 stop all
 
 # Remove the current pm2 from startup to allow for the upgrade.
 pm2 unstartup
 
-# Change "node_20.x" in the command below to the new NodeJS version you are wanting to install.
-echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
-sudo apt update
-sudo apt install -y nodejs
-sudo apt update
-sudo apt upgrade -y
+# Install latest Node Version Manager (NVM) for managing NodeJS versions
+# Change installed version as needed per FoundryVTT documentation.
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+nvm install 20
+node -v
+nvm current
+npm -v
 
 # Set pm2 to use the upgraded version of NodeJS and set it to run on start again.
 npm rebuild -g pm2
