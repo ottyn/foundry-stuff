@@ -17,6 +17,7 @@ nvm install 20
 node -v
 nvm current
 npm -v
+nvm alias default node
 
 # Set pm2 to use the upgraded version of NodeJS and set it to run on start again.
 npm rebuild -g pm2
