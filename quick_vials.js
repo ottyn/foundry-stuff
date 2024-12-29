@@ -1,3 +1,5 @@
+// To use, create a new Action on Alchemist actor.
+// Add this macro and set it to run on Action when used. 
 if (!actor || !item) {
   return;
 }
