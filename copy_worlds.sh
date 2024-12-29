@@ -4,16 +4,16 @@
 # 
 
 # Global script variables
-# Replace <...> to match your environment
+# Change to match your environment
 #
 # SSH private key for remote server
-$ssh_private_key="$HOME/.ssh/<private.key>"
+$ssh_private_key="$HOME/.ssh/private.key"
 # Local FoundryVTT user data path
 $local_data="$HOME/foundrydata"
 # Remote server username and IP address
-$remote_svr="<username>@<remote IP>"
+$remote_svr="username@remote IP"
 # Remote server FoundryVTT user data path
-$remote_path="<full path to folder containing Data dir>"
+$remote_path="/home/username/foundrydata"
 
 pm2 stop foundry
 
