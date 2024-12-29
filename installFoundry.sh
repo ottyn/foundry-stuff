@@ -67,6 +67,13 @@ sed -i 's/"hostname": null/"hostname": "$vtturl"/g' $HOME/foundrydata/Config/opt
 # Restart Foundry pm2 instance
 pm2 restart foundry
 
+# Create custom assets directory
+mkdir $HOME/foundrydata/Data/assets
+mkdir $HOME/foundrydata/Data/assets/pc_images
+mkdir $HOME/foundrydata/Data/assets/npc_images
+mkdir $HOME/foundrydata/Data/assets/maps
+mkdir $HOME/foundrydata/Data/assets/token_frames
+
 # Restarting the system to complete installation
 sleep 2
 clear
