@@ -24,6 +24,10 @@ backup_dest="$HOME/backups"
 backup_file="$backup_dest/foundrydata_$today.tar.gz"
 # Create a log file
 log_file="$backup_dest/backup.log"
+# Local Instance Name
+fvttLocal="foundry"
+# Remote Instance Name
+fvttRemote="foundry"
 
 # Check if the backup directory exists
 if [ ! -d "$backup_dest" ]; then
@@ -42,19 +46,19 @@ echo "$today" >> $log_file
 
 # Shutting down Foundry instance
 echo "Shutting down Foundry server..." >> $log_file
-pm2 stop foundry
+pm2 stop $fvttLocal
 
 # Copy world and assets folders to Backup FoundryVTT Server
 # This section can be removed if no Backup FoundryVTT Server is used
 echo "Copying Worlds folder to Backup Server..." >> $log_file
 echo " " >> $log_file
-ssh -i $ssh_private_key $remote_svr -- "pm2 stop foundry"
+ssh -i $ssh_private_key $remote_svr -- "pm2 stop $fvttRemote"
 rsync -azh -e "ssh -i $ssh_private_key" --stats $local_data/Data/worlds/ $remote_svr:$remote_path/Data/worlds/ >>
 echo " " >> $log_file
 echo "Copying Assets folder to Backup Server..." >> $log_file
 rsync -azh -e "ssh -i $ssh_private_key" --stats $local_data/Data/assets/ $remote_svr:$remote_path/Data/assets/ >>
 echo " " >> $log_file
-ssh -i $ssh_private_key $remote_svr -- "pm2 start foundry"
+ssh -i $ssh_private_key $remote_svr -- "pm2 start $fvttRemote"
 
 # Backup the folder to the tar.gz file
 echo "Creating Foundry Backup..." >> $log_file
@@ -67,5 +71,5 @@ find $backup_dest -name '*.tar.gz' -type f -mtime +15 -exec rm -f {} \; -exec ec
 
 # Restarting Foundry instance
 echo "Starting Foundry server..." >> $log_file
-pm2 start foundry
+pm2 start $fvttLocal
 echo " " >> $log_file
