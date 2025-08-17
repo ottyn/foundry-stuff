@@ -14,14 +14,18 @@ local_data="$HOME/foundrydata"
 remote_svr="username@remote IP"
 # Remote server FoundryVTT user data path
 remote_path="/home/username/foundrydata"
+# Local Instance Name
+fvttLocal="foundry"
+# Remote Instance Name
+fvttRemote="foundry"
 
-pm2 stop foundry
+pm2 stop $fvttLocal
 
-ssh -i $ssh_private_key $remote_svr -- "pm2 stop foundry"
+ssh -i $ssh_private_key $remote_svr -- "pm2 stop $fvttRemote"
 
 rsync -azh -e "ssh -i $ssh_private_key" --stats $local_data/Data/worlds/ $remote_svr:$remote_path/Data/worlds/
 rsync -azh -e "ssh -i $ssh_private_key" --stats $local_data/Data/assets/ $remote_svr:$remote_path/Data/assets/
 
-ssh -i $ssh_private_key $remote_svr -- "pm2 start foundry"
+ssh -i $ssh_private_key $remote_svr -- "pm2 start $fvttRemote"
 
-pm2 start foundry
+pm2 start $fvttLocal
