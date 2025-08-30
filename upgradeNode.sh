@@ -13,7 +13,7 @@ pm2 unstartup
 # Install latest Node Version Manager (NVM) for managing NodeJS versions
 # Change installed version as needed per FoundryVTT documentation.
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
-nvm install 20
+nvm install 22
 node -v
 npm -v
 nvm alias default node
