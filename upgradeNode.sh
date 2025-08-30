@@ -1,26 +1,44 @@
-#!/bin/bash    
+#!/bin/bash
 # chmod a+x /where/i/saved/it/upgradeNode.sh
-# Upgrade NodeJS on Linux
+# Upgrade NodeJS & PM2 safely with NVM for FoundryVTT
 
-# Check for system updates and clean packages
-sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y && sudo apt autoclean
+set -Eeuo pipefail
 
-# Install latest Node Version Manager (NVM) for managing NodeJS versions
-# Change installed version as needed per FoundryVTT documentation.
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
-nvm install 22
-nvm use 22
-node -v
-npm -v
-nvm alias default node
-nvm current
+# === System update (optional if you want to keep OS updated here) ===
+sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y && sudo apt autoclean -y
 
-# Install latest version of pm2 and update the running process.
-npm install pm2@latest -g
-pm2 update   # If process hangs at PM2 Updated, hit Ctrl+C to break out.
+# === Ensure NVM is installed ===
+export NVM_DIR="$HOME/.nvm"
+if [ ! -d "$NVM_DIR" ]; then
+    echo "Installing NVM..."
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
+fi
 
-# Restart any previously running pm2 managed processes.
+# Load NVM into this shell session
+# (otherwise "nvm: command not found")
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+    # shellcheck disable=SC1090
+    source "$NVM_DIR/nvm.sh"
+else
+    echo "❌ NVM not found after installation"
+    exit 1
+fi
+
+# === Install and use desired Node.js version ===
+NODE_VERSION=22
+nvm install "$NODE_VERSION"
+nvm use "$NODE_VERSION"
+nvm alias default "$NODE_VERSION"
+
+echo "✅ Using Node version: $(node -v)"
+echo "✅ Using NPM version: $(npm -v)"
+
+# === Install or update PM2 ===
+npm install -g pm2@latest
+
+# === Restart PM2 processes ===
+pm2 update || true   # continue even if update hangs
 pm2 save
 pm2 resurrect
 
-# This concludes the nodejs update.
+echo "🎉 NodeJS + PM2 upgrade complete!"
