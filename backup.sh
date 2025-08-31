@@ -1,6 +1,7 @@
 #!/bin/bash
 #
 # FoundryVTT Backup Script
+# Based on using installFoundry.sh script in this repo
 # Creates a local compressed backup and syncs Worlds/Assets to remote server
 # Remove/comment Remote Stop, Sync, and Start sections if not copying Worlds/Assets to remote server
 
@@ -12,11 +13,10 @@ trap 'echo "[$(date +%F %T)] ❌ Error on line $LINENO. Exit code $?" | tee -a "
 # Edit variables with <> notation to to match your environment
 # ─────────────────────────────
 ssh_private_key="$HOME/.ssh/<key_file>"                # SSH private key
-local_user_folder="<UserData_folder>"                  # Local folder name for UserData
-local_path="$HOME/$user_folder"                        # Local FoundryVTT data path
+local_path="$HOME/<server_folder>"                     # Local server path that contains the FoundryVTT and FoundryUserData folders
 local_instance="<instance_name>"                       # Local PM2 Instance name for Foundry
 remote_svr="<username>@<remote_server_IP>"             # Remote server
-remote_path="<remote_UserData_path>"                   # Remote Foundry data path
+remote_path="<remote_UserData_path>"                   # Remote FoundryUserData folder path
 remote_instance="<remote_instance_name>"               # Remote server PM2 Instance name for Foundry
 today=$(date +%Y-%m-%d)                                # Backup date
 backup_dest="$HOME/<backup_folder>"                    # Local backup folder
@@ -60,26 +60,26 @@ ssh -i "$ssh_private_key" "$remote_svr" "pm2 stop $remote_instance" \
 # ─────────────────────────────
 log "Syncing Worlds to remote..."
 scp -r -q -o LogLevel=QUIET -i $ssh_private_key \
-        "$local_path/Data/worlds/" "$remote_svr:$remote_path/Data/" \
+        "$local_path/FoundryUserData/Data/worlds/" "$remote_svr:$remote_path/Data/" \
         || { log "Worlds sync failed"; exit 1; }
 
 log "Syncing Assets to remote..."
 scp -r -q -o LogLevel=QUIET -i $ssh_private_key \
-        "$local_path/Data/assets/" "$remote_svr:$remote_path/Data/" \
+        "$local_path/FoundryUserData/Data/assets/" "$remote_svr:$remote_path/Data/" \
         || { log "Worlds sync failed"; exit 1; }
 
 # ─────────────────────────────
 # Remote Start
 # ─────────────────────────────
 log "Starting remote Foundry..."
-ssh -i "$ssh_private_key" "$remote_svr" "pm2 start $remote_instance" \
+ssh -i "$ssh_private_key" "$remote_svr" "pm2 restart $remote_instance || pm2 start $remote_instance" \
     || { log "Failed to start remote Foundry"; exit 1; }
 
 # ─────────────────────────────
 # Local Backup Archive
 # ─────────────────────────────
 log "Creating backup archive $backup_file"
-tar -zcf "$backup_file" -C "$HOME" "$local_user_folder" \
+tar -zcf "$backup_file" -C "$local_path" "FoundryUserData" \
     || { log "Failed to create local archive"; exit 1; }
 
 # ─────────────────────────────
@@ -93,6 +93,6 @@ find "$backup_dest" -name 'foundrydata_*.tar.gz' -type f -mtime +15 -print -dele
 # Restart Local Foundry
 # ─────────────────────────────
 log "Starting local Foundry..."
-pm2 start $local_instance || { log "Failed to start local Foundry"; exit 1; }
+pm2 restart $local_instance || pm2 start $local_instance || { log "Failed to start local Foundry"; exit 1; }
 
 log "✅ Backup completed successfully"
