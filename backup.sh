@@ -31,8 +31,16 @@ log() { echo "[$(date +%Y-%m-%d)] $*" | tee -a "$log_file"; }
 # ─────────────────────────────
 # Prep Work
 # ─────────────────────────────
-mkdir -p "$backup_dest"
-touch "$log_file"
+if [ ! -d "$backup_dest" ]; then
+    mkdir -p "$backup_dest"
+    touch "$log_file"
+    log "📂 Created backup directory and log file at $backup_dest"
+elif [ ! -f "$log_file" ]; then
+    touch "$log_file"
+    log "📝 Created missing log file $log_file"
+else
+    log "ℹ️ Backup destination and log file already exist, continuing..."
+fi
 
 # Locking to prevent overlap
 lockfile="$backup_dest/.backup.lock"
