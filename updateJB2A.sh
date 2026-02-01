@@ -1,7 +1,7 @@
 #!/bin/bash
 # chmod a+x /where/i/saved/it/updateJB2A.sh
 # Update JB2A from diff
-#
+# 
 
 echo "Stopping Foundry..."
 pm2 stop all
