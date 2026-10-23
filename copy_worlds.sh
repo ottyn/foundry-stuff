@@ -17,7 +17,7 @@ remote_path="/full_path_to/FoundryUserData"
 
 echo Stopping PF2e Foundry Instances...
 pm2 stop pf2e
-ssh -i $ssh_private_key $remote_svr -- "pm2 stop pf2e"
+ssh -i $ssh_private_key $remote_svr -- "export NVM_DIR=\"\$HOME/.nvm\"; [ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\"; pm2 stop pf2e"
 
 echo Copying Worlds to Backup Foundry Server...
 scp -r -q -o LogLevel=QUIET -i $ssh_private_key $local_data/Data/worlds/ $remote_svr:$remote_path/Data/
@@ -27,5 +27,5 @@ echo Copying BBMM-Data to Backup Foundry Server...
 scp -r -q -o LogLevel=QUIET -i $ssh_private_key $local_data/Data/bbmm-data/ $remote_svr:$remote_path/Data/
 
 echo Restarting PF2e Foundry Instances...
-ssh -i $ssh_private_key $remote_svr -- "pm2 start pf2e"
+ssh -i $ssh_private_key $remote_svr -- "export NVM_DIR=\"\$HOME/.nvm\"; [ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\"; pm2 start pf2e"
 pm2 start pf2e
